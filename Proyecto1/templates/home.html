@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<title>Inicio</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<link rel="stylesheet" href="{{url_for('.static', filename='css/main.css')}}">
+	<link rel="stylesheet" href="{{url_for('.static', filename='css/estilos.css')}}">
+</head>
+<body>
+	<!-- SideBar -->
+	<section class="full-box cover dashboard-sideBar">
+		<div class="full-box dashboard-sideBar-bg btn-menu-dashboard"></div>
+		<div class="full-box dashboard-sideBar-ct">
+			<!--SideBar Title -->
+			<div class="full-box text-uppercase text-center text-titles dashboard-sideBar-title">
+				libreria <i class="zmdi zmdi-close btn-menu-dashboard visible-xs"></i>
+			</div>
+			<!-- SideBar User info -->
+			<div class="full-box dashboard-sideBar-UserInfo">
+				<figure class="full-box">
+					<img src="{{url_for('.static', filename='assets/img/avatar.jpg')}}" >
+
+				</figure>
+				<ul class="full-box list-unstyled text-center">
+					<li>
+						<a >
+							<i class="zmdi zmdi-library ">{{nombre}}</i> <!-- cerrar ******************************** session -->
+						</a>
+					</li>
+				</ul>
+			</div>
+			<!-- SideBar Menu -->
+			<ul class="list-unstyled full-box dashboard-sideBar-Menu">
+				<li>
+					<a href="{{ url_for('busqueda')}}"  class="btn-sideBar-SubMenu">
+						<i class="zmdi zmdi-sort zmdi-hc-fw"></i> Buscar Libro
+
+					</a>
+				</li>
+				<li>
+					<a href="{{ url_for('logout')}}" class="btn-exit-system">
+						<i class="zmdi zmdi-power">	Cerrar session</i> <!-- cerrar ******************************** session -->
+					</a>
+				</li>
+			</ul>
+		</div>
+	</section>
+
+	<!-- Content page-->
+	<section class="full-box dashboard-contentPage">
+		<!-- NavBar -->
+		<nav class="full-box dashboard-Navbar">
+			<ul class="full-box list-unstyled text-right">
+				<li class="pull-left">
+					<a href="#!" class="btn-menu-dashboard"><i class="zmdi zmdi-more-vert"></i></a>
+				</li>
+				<li>
+					<a href="{{ url_for('busqueda')}}" >
+						<i class="zmdi zmdi-search"></i>
+					</a>
+				</li>
+				<li>
+					<a href="#!" class="btn-modal-help">
+						<i class="zmdi zmdi-help-outline"></i>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- Content page -->
+
+
+		<div class="container-fluid">
+			<div class="page-header">
+			  <h1 class="text-titles">Libros<small>   Lista</small></h1>
+			</div>
+		</div>
+		<div class="container">
+				<table class="table">
+						<thead>
+								<tr>
+										<th>ISBN</th>
+										<th>Titulo</th>
+										<th>Autor</th>
+										<th>Año</th>
+								</tr>
+						</thead>
+						<tbody>
+							{% for fila in filas %}
+								<tr>
+									<form action="{{ url_for('infolibro') }}" method="post">
+												<td data-label="ISBN"><button   type="submit" name="isbn" value="{{fila[0]}}" >{{fila[0]}}</button></td>
+									</form>
+										<td data-label="Titulo">{{fila[1]}}</td>
+										<td data-label="Autor">{{fila[2]}}</td>
+										<td data-label="Año">{{fila[3]}}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+				</table>
+		</div>
+
+	</section>
+
+
+	<!-- Dialog help -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="Dialog-Help">
+	  	<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+			    <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			    	<h4 class="modal-title">Help</h4>
+			    </div>
+			    <div class="modal-body">
+			        <p>
+			        	Brandon Zapata Mora 17231593
+			        </p>
+			    </div>
+		      	<div class="modal-footer">
+		        	<button type="button" class="btn btn-primary btn-raised" data-dismiss="modal"><i class="zmdi zmdi-thumb-up"></i> Ok</button>
+		      	</div>
+		    </div>
+	  	</div>
+	</div>
+	<!--====== Scripts -->
+
+	<script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/sweetalert2.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/material.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/ripples.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/jquery.mCustomScrollbar.concat.min.js')}}"></script>
+	<script src="{{url_for('static', filename='js/main.js')}}"></script>
+	<script>
+		$.material.init();
+	</script>
+</body>
+</html>
