@@ -4,7 +4,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-engine = create_engine("postgres://kololixs:SQ5cXGAXFkRRJ1rqH3tV64fddcpcPKsW@drona.db.elephantsql.com:5432/kololixs")
+engine = create_engine("postgres://ouajkbkn:sux35jMh4OOWUHikcOwwqUxCl8WYuJzu@drona.db.elephantsql.com:5432/ouajkbkn")
 db = scoped_session(sessionmaker(bind=engine))
 
 def main():

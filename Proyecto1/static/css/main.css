@@ -45,6 +45,54 @@ body, html{
 	font-family: 'RobotoCondensed';
 	overflow: hidden;
 }
+.btn-ghost{
+  position: relativate;
+  display: inline-block;
+  border: 2px solid var(--white);
+  padding: 20px 80px;
+  color: var(--black);
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  background: var(--white);
+  transition: color 0.5s, background 0.5s;
+  margin-left: 30px;
+  margin-bottom: 15px;
+  font-size: 1em;
+  min-width: 140px;
+  text-align: center;
+}
+.btn-ghost.blue{
+  background-color: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+
+.btn-ghost.secundary.blue{
+  background-color: transparent;
+  color: var(--blue);
+}
+
+.btn-ghost.blue:hover{
+  background-color: transparent;
+  color: var(--blue);
+}
+
+.btn-ghost.secundary.blue:hover{
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.btn-ghost.blue:active{
+  box-shadow: inset 0 0 20px var(--blue);
+}
+
+.btn-ghost.secundary.blue:active{
+  box-shadow: inset 0 0 20px var(--white);
+}
+
+
+
 .full-box{
 	margin: 0;
 	padding: 0;
@@ -92,7 +140,7 @@ body, html{
 .dashboard-sideBar{
 	left: 0;
 	z-index: 2;
-	background-image: url('../assets/img/sideBar-font.jpg');
+	background-image: url('../assets/img/FONDO2.jpg');
 	border-right: 1px solid rgba(255, 255, 255, .4);
 	overflow: hidden;
 }
@@ -169,7 +217,7 @@ body, html{
 }
 .dashboard-sideBar-Menu > li > a > i.zmdi-caret-down{
 	line-height: 50px;
-	transition: all .3s ease-in-out; 
+	transition: all .3s ease-in-out;
 }
 .dashboard-sideBar-Menu > li > a{
 	padding: 0 15px;

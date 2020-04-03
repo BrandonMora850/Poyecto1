@@ -1,76 +1,135 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, session
+
+from sqlalchemy import create_engine   #crear instancia para base de datos
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+
+import os
+
+
 
 app = Flask(__name__)
+app.secret_key = "1234"
+
+engine = create_engine("postgres://ouajkbkn:sux35jMh4OOWUHikcOwwqUxCl8WYuJzu@drona.db.elephantsql.com:5432/ouajkbkn") #se conecta a la base de datos
+basededatos = scoped_session(sessionmaker(bind=engine))
 
 #index normal
 @app.route("/")
-def index():
+def inicio():
     return render_template("index.html")
 
-#cuando se le da clic al boton para validar usuario y contraseña
+
 @app.route("/validar", methods=["POST"])
 def validar():
-    nombrerecibido = request.form.get("nombreusuario")
-    contrarecibida = request.form.get("contrausuario")
-    return f"Usuario : {nombrerecibido} ! Contraseña : {contrarecibida} !"
+    nombrerecibido = request.form.get("Usuario")
+    contrarecibida = request.form.get("contra")
 
-#registro
-@app.route("/registro")
+    usuarioencontrado = basededatos.execute("SELECT usuario FROM usuarios WHERE usuario=:username",{"username":nombrerecibido}).fetchone()
+    contraseñaencontrada = basededatos.execute("SELECT 	contraseña FROM usuarios WHERE usuario=:username",{"username":nombrerecibido}).fetchone()
+
+    if usuarioencontrado is None:
+        error = True
+        return render_template("index.html", error=error)
+    else:
+        for passwor_data in contraseñaencontrada:
+            if contrarecibida == passwor_data:
+                session["user"] = nombrerecibido
+                return redirect(url_for('home'))
+            else:
+
+                 error = True
+
+            return render_template("index.html", error=error)
+    basededatos.commit()
+
+@app.route("/logout")
+def logout():
+    # Forget any user_id
+    session.clear()
+    return render_template("index.html")
+    #return f"Usuarios : {numerodeusuarios} ! Contraseña : {contrarecibida} !"
+@app.route("/home")
+def home():
+    libreria = basededatos.execute("SELECT * FROM public . libros LIMIT 500")
+    filas = libreria.fetchall()
+    if "user" in session:
+        usuario = session["user"]
+        usuarioencontrado = basededatos.execute("SELECT usuario FROM usuarios WHERE usuario=:username",{"username":usuario}).fetchone()
+        for row in usuarioencontrado:
+            nombre = usuarioencontrado[0]
+        return render_template("home.html", filas=filas, nombre=nombre)
+
+@app.route("/busqueda")
+def busqueda():
+    libreria = basededatos.execute("SELECT * FROM public . libros LIMIT 100")
+    filas = libreria.fetchall()
+    return render_template("busqueda.html", filas=filas)
+
+@app.route("/buscar", methods=["POST", "GET"])
+def buscar():
+    busquedarecibida = request.form.get("busqueda")
+        #consulta para buscar cualquier resultado entre los campos que coincida con la busqueda
+    busquedaencontrada = basededatos.execute("SELECT isbn, titulo, autor, año FROM libros WHERE (LOWER(isbn) LIKE LOWER(:bus)) OR (LOWER(titulo) LIKE LOWER(:bus)) OR (LOWER(autor) LIKE LOWER(:bus)) LIMIT 10", { "bus": '%' + busquedarecibida + '%'} )
+    filas = busquedaencontrada.fetchall()
+    return render_template("busqueda.html", busquedarecibida = busquedarecibida, busqueda = busqueda, filas=filas)
+
+
+
+@app.route("/paginaR")
+def paginaR():
+    return render_template("Regitrarse.html")
+
+@app.route("/registro", methods=["POST"])
 def registro():
-    return render_template("registro.html")
+    usuarioregistro = request.form.get("Usuario")
+    nombreregistro = request.form.get("Nombre")
+    RApellidoP = request.form.get("Apellidop")
+    RApellidoM = request.form.get("Apellidom")
+    contraseñaR = request.form.get("contra")
+    correoregistrar = request.form.get("correo")
 
-#validar registro
-@app.route("/validarregistro", methods=["POST"])
-def validarregistro():
-    usuarioregistrar = request.form.get("usuarioregistro")
-    contraregistrar = request.form.get("contraregistro")
-    contra2registrar = request.form.get("contra2registro")
+    registro = False
+    Urepetido = basededatos.execute("SELECT usuario FROM usuarios WHERE usuario=:username",{"username":usuarioregistro}).fetchone()
 
-    nombreregistrar = request.form.get("nombreusuarioregistro")
-    apellidoregistrar = request.form.get("apellidoregistro")
-    correoregistrar = request.form.get("correoregistro")
-    #return f"UsuarioNuevo : {usuarioregistrar}!\nContraseña : {contraregistrar}!\nContraseñax2 : {contra2registrar}!\nNombre usuario : {nombreregistrar}!\nApellido usuario: {apellidoregistrar}!\nCorreo usuario : {correoregistrar}!"
-
-    textoerror = ""
-    registroexitoso = False
-
-    #si todos los campos estan vacios..
-    if usuarioregistrar == "" and contraregistrar == "" and contra2registrar == "" and nombreregistrar == "" and apellidoregistrar == "" and correoregistrar == "":
+    if usuarioregistro == "" and nombreregistro == "" and RApellidoP == "" and RApellidoM == "" and contraseñaR == "" and correoregistrar == "":
         error = True
-        textoerror=" Te faltan rellenar todos los campos!"
-        registroexitoso = False
+        registro = False
+        return render_template("Regitrarse.html", error=error)
+    if Urepetido is not None:
+        duplicado = True
+        registro = False
+        return render_template("Regitrarse.html", duplicado=duplicado)
 
-    #si no..
 
-    #si falta de llenar algun campo
-    elif usuarioregistrar == "" or contraregistrar == "" or contra2registrar == "" or nombreregistrar == "" or apellidoregistrar == "" or correoregistrar == "":
+    elif usuarioregistro == "" or nombreregistro == "" or RApellidoP == "" or RApellidoM == "" or contraseñaR == "" or correoregistrar == "":
         error = True
-        textoerror=" Debes llenar el formulario completo!"
-        registroexitoso = False
-
-    #si estan todos los campos llenos..
-    elif "@" not in correoregistrar and contraregistrar != contra2registrar: # si se ingresa bien el correo..
-        error = True
-        textoerror += " Ingrese bien el correo y verifique las contraseñas! "
-        registroexitoso = False
-
-    #si las contraseñas no coinciden
-    elif contraregistrar != contra2registrar:
-        error = True
-        textoerror += " Las contraseñas no coinciden!"
-        registroexitoso = False
-
-    elif "@" not in correoregistrar: # si se ingresa bien el correo..
-        error = True
-        textoerror += " Ingrese bien el correo!"
-        registroexitoso = False
-
+        registro = False
+        return render_template("Regitrarse.html", error=error)
 
 
     else:
-        registroexitoso = True
+        registro = True
         error = False
 
+        basededatos.execute("INSERT INTO usuarios (usuario, nombre, apellidop, apellidom, contraseña, correo) VALUES (:usuario, :nombre, :apellidop, :apellidom, :contraseña, :correo)",{"usuario": usuarioregistro, "nombre": nombreregistro, "apellidop": RApellidoP, "apellidom": RApellidoM, "contraseña": contraseñaR, "correo": correoregistrar})
+    basededatos.commit()
 
-    return render_template("registro.html", error=error , textoerror=textoerror, registroexitoso=registroexitoso)
-app.run(port=5000, debug=True)
+    return render_template("index.html", registro=registro)
+
+
+@app.route("/infolibro", methods=["POST", "GET"])
+def infolibro():
+    isbnrecibido = request.form.get("isbn")
+    datoslibro = basededatos.execute("SELECT isbn, titulo, autor, año  FROM libros WHERE isbn=:isbnrecibido",{"isbnrecibido":isbnrecibido}).fetchall()
+    for dato in datoslibro:
+        isbn = dato[0]
+        titulo  = dato[1]
+        autor = dato[2]
+        ano = dato[3]
+    return render_template("Libro.html", isbn=isbn, titulo=titulo, autor=autor, ano=ano)
+
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -8,37 +8,53 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
 
-
 </head>
 <body class="cover" style="background-image: url({{url_for('static',filename='assets/img/loginFont.jpg')}});">
 
 
-	<form action="{{ url_for('validar') }}" method="post" autocomplete="off" class="full-box logInForm">
-		<p class="text-center text-muted"><i class="zmdi zmdi-account-circle zmdi-hc-5x"></i></p>
-		<p class="text-center text-muted text-uppercase">Inicia sesión con tu cuenta</p>
+	<form action="{{ url_for('registro') }}" method="post" autocomplete="off" class="full-box logInForm">
+
+		<p class="text-center text-muted text-uppercase">Registrarse</p>
 		<div class="form-group label-floating">
-		  <label class="control-label" for="Usuario">Usuario</label>
 
+		  <label class="control-label" for="">Usuario</label>
 		  <input class="form-control" name="Usuario" type="text">
-			<p class="help-block">Escribe tú Usuario</p> <!--  dsugkjdhhdhdhdhdhdhvdshdgsjkdsgdhhgdghdhhddhhh-->
-
+			<p class="help-block">Escribe tú Usuario</p> <!--  Usuarioooooooooooooooooooooooooooooooooooo-->
+		</div>
+		<div class="form-group label-floating">
+			<label class="control-label" for="">Nombre</label>
+		 <input class="form-control" name="Nombre" type="text">
+		 <p class="help-block">Ingresa tu nombre</p> <!--  nombreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-->
+		</div>
+		<div class="form-group label-floating">
+			<label class="control-label" for="">Apellido Paterno</label>
+		 <input class="form-control" name="Apellidop" type="text">
+		 <p class="help-block">Ingrese su Apellido Paterno</p> <!--  nombreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-->
+		</div>
+		<div class="form-group label-floating">
+			<label class="control-label" for="">Apellido Materno</label>
+		 <input class="form-control" name="Apellidom" type="text">
+		 <p class="help-block">Ingrese su Apellido materno</p> <!--  nombreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-->
 		</div>
 		<div class="form-group label-floating">
 		  <label class="control-label" for="UserPass">Contraseña</label>
-
 		  <input class="form-control" name="contra" type="password">
 		  <p class="help-block">Escribe tú contraseña</p> <!--  dsugkjdhhdhdhdhdhdhvdshdgsjkdsgdhhgdghdhhddhhh-->
-
+		</div>
+		<div class="form-group label-floating">
+			<label class="control-label" for="">Correo</label>
+		 <input class="form-control" name="correo" type="email">
+		 <p class="help-block">Ingrese su Correo</p> <!--  nombreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-->
 		</div>
 		<div class="form-group text-center">
-			<input type="submit" value="Iniciar sesión" class="btn btn-raised btn-danger">
-       <h2 class="btn btn-raised btn-info" ><a style="text-decoration:none; color:white;" href="{{ url_for('paginaR') }}">Registrarse</a></h2>
-		</div>
-	</form>
+			<input type="submit" value="Registarse" class="btn btn-raised btn-info">
 
+		</div>
+
+	</form>
 	{% if error %}
 	<div  class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-			 <div class="toast" style="position: absolute; top: 0; right: 0;"></div>
+			 <div class="toast" style="position: absolute; top: 50; right: 50;"></div>
 			 <div class="toast-header">
 					 <svg class="bd-placeholder-img rounded mr-2" width="50" height="50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="true" role="img"><rect width="100%" height="100%" fill="#ff0000"></rect></svg>
 					 <strong class="mr-auto"><h1>Error!</h1></strong>
@@ -48,26 +64,26 @@
 					 </button>
 			 </div>
 			 <div class="toast-body">
-					 Favor de verificar sus datos!
+					 Favor de ingresar todos sus datos correctamente!
 			 </div>
 		 </div>
-  {% endif %}
-	{% if registro %}
+	{% endif %}
+	{% if duplicado %}
 	<div  class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-			 <div class="toast" style="position: absolute; top: 0; right: 0;"></div>
+			 <div class="toast" style="position: absolute; top: 50; right: 50;"></div>
 			 <div class="toast-header">
-					 <svg class="bd-placeholder-img rounded mr-2" width="50" height="50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="true" role="img"><rect width="100%" height="100%" fill="#52ff00"></rect></svg>
-					 <strong class="mr-auto"><h1>Bienvenido!</h1></strong>
+					 <svg class="bd-placeholder-img rounded mr-2" width="50" height="50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="true" role="img"><rect width="100%" height="100%" fill="#ff0000"></rect></svg>
+					 <strong class="mr-auto"><h1>Error!</h1></strong>
 					 <small> Ahora</small>
 					 <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
 						 <span aria-hidden="true">×</span>
 					 </button>
 			 </div>
 			 <div class="toast-body">
-					 Registro completado correctamente!Inicie sesión
+					 El nombre de usuario ya existe porfavor seleccione otro
 			 </div>
 		 </div>
-  {% endif %}
+	{% endif %}
 
 
 	<!--====== Scripts -->
